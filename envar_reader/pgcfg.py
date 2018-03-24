@@ -11,9 +11,10 @@ def __get_env_var(name) :
     return v
 
 DEFAULT_HOST="localhost"
-DEFAULT_PORT="9000"
+DEFAULT_PORT="5432"
 DEFAULT_USER="docker"
 DEFAULT_PASSWORD="d0cker"
+DEFAULT_SSLMODE="disable"
 
 def __parse_port_intv(v):
     try:
@@ -23,17 +24,19 @@ def __parse_port_intv(v):
     return rst
 
 class PgConfig:
-    def __init__(self, host, port, user, password):
+    def __init__(self, host, port, user, password, sslmode):
         self.host = host
         self.port = port
         self.user = user
         self.password = password
+        self.sslmode = sslmode
 
 def read():
     host = __get_env_var("POSTGRES_HOSTNAME")
     port = __get_env_var("POSTGRES_PORT")
     user = __get_env_var("POSTGRES_USER")
     password = __get_env_var("POSTGRES_PASSWORD")
+    sslmode = __get_env_var("POSTGRES_SSLMODE")
     if host == "" :
         host =DEFAULT_HOST
     if port == "" :
@@ -42,4 +45,6 @@ def read():
         user = DEFAULT_USER
     if password == "" :
         password = DEFAULT_PASSWORD
-    return PgConfig(host, __parse_port_intv(port), user, password)
+    if sslmode == "" :
+        sslmode = DEFAULT_SSLMODE
+    return PgConfig(host, __parse_port_intv(port), user, password, sslmode)
